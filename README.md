@@ -18,3 +18,5 @@ The output of this module should be a grey scale value related to the input time
 ### Image Generation
 
 There's no need to generate an actual image. Lights can be delivered from the point of the hex to the object on the screen. A simple function can determine the illumination of this point since the object is a rectangle.
+
+[Hexagon generation and mapping](notes/hex.md)
