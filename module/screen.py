@@ -1,10 +1,12 @@
 import numpy as np
 from module.hex import Hex
 from module.utils import GetLine
+from module.config import Config
+from module.movement import Rectangle
 from math import floor
 
 class Screen:
-	def __init__(self, width, height, hexRad):
+	def __init__(self, width:int, height:int, hexRad):
 		# width -> x, height -> y
 		self.map = np.zeros((width, height))
 
@@ -43,3 +45,31 @@ class Screen:
 						continue
 					hex.pixels.append([x, y])
 		# Now all pixels have been mapped to the hexagons
+
+		self.eye = [width / 2, height / 2, -Config.DISTANCE]
+
+	def render(self, objList:list):
+		# Clear
+		self.map.fill(0)
+		# perspective projection
+		# xy plane: z=0
+		# line from the eye to the origin intersect the plane
+		o: Rectangle
+		for o in objList:
+			if o.trace == []:
+				continue
+			origin = o.pop()
+			# Ze/(Ze-Zo)
+			scale = (self.eye[2] - origin[2]) / self.eye[2]
+			width = int(o.width * scale)
+			height = int(o.height * scale)
+			pos = [0, 0]
+			# (yo-ye)/(y-ye)=Ze/(Ze-Zo)
+			pos[0] = int((origin[0] - self.eye[0]) * scale + self.eye[0])
+			pos[1] = int((origin[1] - self.eye[1]) * scale + self.eye[1])
+			for w in range(0, width):
+				for h in range(0, height):
+					if pos[0] + w < self.map.shape[0] and pos[1] + h < self.map.shape[1]:
+						self.map[w + pos[0], h + pos[1]] = Config.PIXEL
+		
+

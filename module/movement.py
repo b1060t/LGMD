@@ -1,8 +1,11 @@
 import numpy as np
 
-class Movement:
-	def __init__(self):
-		self.pos = 0
+class Rectangle:
+	def __init__(self, trace:list, width, height):
+		# Top left
+		self.trace = trace
+		self.width = width
+		self.height = height
 
-def generateObj():
-	return 0
+	def pop(self):
+		return self.trace.pop(0)
