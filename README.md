@@ -3,13 +3,17 @@ BME502 Final Project: lobula giant movement detector simulation from *jn.1996.75
 
 ## Results
 
-### Velocity
+**Approaching Velocity:**
+![Velocity](pics/rst_velocity.png)
 
-![](pics/rst_velocity.png)
+**Object Size:**
+![Size](pics/rst_size.png)
 
-### Size
+**Receding Object:**
+![Receding](pics/rst_recede.png)
 
-![](pics/rst_size.png)
+**Directional Selectivity:**
+![Directional](pics/rst_direction.png)
 
 ## Movement Generator
 
