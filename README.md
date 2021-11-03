@@ -1,6 +1,12 @@
 # LGMD
 BME502 Final Project: lobula giant movement detector simulation from *jn.1996.75.3.967*
 
+## Results
+
+### Without F-unit
+
+![](pics/without_F_unit.png)
+
 ## Movement Generator
 
 The output of this module should be a grey scale value related to the input time and coordinates, which fakes a video of moving objects.

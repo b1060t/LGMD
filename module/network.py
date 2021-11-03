@@ -1,7 +1,8 @@
+from functools import reduce
 import numpy as np
 
 from module.screen import Screen
-from module.unit import Unit, PUnit
+from module.unit import Unit, PUnit, SUnit
 from module.config import Config
 
 class Network:
@@ -25,7 +26,7 @@ class Network:
 			'tau': Config.E_TAU,
 			'refractory': Config.E_REFRACTORY,
 			'weight': Config.E_WEIGHT
-			}, pre=(p, 1.0)), self.punit))
+			}, pre=[(p, 1.0)]), self.punit))
 
 		# Generate I1unit
 		self.i1unit = list(map(lambda p: Unit({
@@ -34,7 +35,7 @@ class Network:
 			'tau': Config.I_TAU,
 			'refractory': Config.I_REFRACTORY,
 			'weight': Config.I1_WEIGHT
-			}, pre=(p, 1.0)), self.punit))
+			}, pre=[(p, 1.0)]), self.punit))
 
 		# Generate I1unit
 		self.i2unit = list(map(lambda p: Unit({
@@ -43,16 +44,39 @@ class Network:
 			'tau': Config.I_TAU,
 			'refractory': Config.I_REFRACTORY,
 			'weight': Config.I2_WEIGHT
-			}, pre=(p, 1.0)), self.punit))
+			}, pre=[(p, 1.0)]), self.punit))
 
 		# Generate Sunit
-		# Todo
+		self.sunit = list(map(lambda p: SUnit({
+			'threshold': Config.S_THRESHOLD,
+			'delay': Config.S_DELAY,
+			'tau': Config.S_TAU,
+			'refractory': Config.S_REFRACTORY,
+			'weight': Config.S_WEIGHT
+			}, pre=[(p, 1.0)], i1units=self.i1unit, i2units=self.i2unit), self.eunit))
+
+	def reset(self):
+		for u in self.punit:
+			u.reset()
+		for u in self.eunit:
+			u.reset()
+		for u in self.i1unit:
+			u.reset()
+		for u in self.i2unit:
+			u.reset()
+		for u in self.sunit:
+			u.reset()
 
 	def update(self, objList):
 		self.scr.render(objList)
 		rst = list(map(lambda p: p.Update(), self.punit))
 		rst = list(map(lambda p: p.Forward(), self.punit))
 		rst = list(map(lambda e: e.Update(), self.eunit))
+		rst = list(map(lambda e: e.Forward(), self.eunit))
 		rst = list(map(lambda i1: i1.Update(), self.i1unit))
+		rst = list(map(lambda i1: i1.Forward(), self.i1unit))
 		rst = list(map(lambda i2: i2.Update(), self.i2unit))
+		rst = list(map(lambda i2: i2.Forward(), self.i2unit))
+		rst = list(map(lambda s: s.Update(), self.sunit))
+		rst = reduce(lambda pre, nxt: pre + nxt, list(map(lambda u: u.output, self.sunit)))
 		return rst

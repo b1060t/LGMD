@@ -11,8 +11,6 @@ class Unit:
 		self.refractory = dist['refractory']
 		self.weight = dist['weight']
 
-		self.hex:Hex = None
-
 		# To simulate delay:
 		# Maintain a list whose length = delay
 		# e.g. delay = 2ms, interval = 1ms
@@ -24,15 +22,27 @@ class Unit:
 		# Input is at 2ms and output is at 4ms (2ms delay)
 		self.excitations = [False for i in range(int(self.delay/Config.INTERVAL))]
 
-		# (unit, weight)
-		self.units = []
+		# (unit, proportional_weight)
+		self.nxt = []
 
-		## Add this unit to preUnit.units
-		if pre != None:
-			pre[0].units.append((self, pre[1]))
+		## Add this unit to preUnit.nxt
+		if pre != []:
+			# First unit coord
+			self.hex = pre[0][0].hex
+			for p in pre:
+				p[0].nxt.append((self, p[1]))
+				
 
 		self.input = 0.0
 		self.output = 0.0
+
+		self.rfrTime = 0.0
+	
+	def reset(self):
+		self.excitations = [False for i in range(int(self.delay/Config.INTERVAL))]
+		self.input = 0.0
+		self.output = 0.0
+		self.rfrTime = 0.0
 
 	def InitializeHex(self, hex:Hex):
 		self.hex = hex
@@ -41,7 +51,7 @@ class Unit:
 		res = 0.0
 		# Calculate output
 		if self.excitations.pop(0):
-			res = self.weight
+			res = 1
 		else:
 			res = self.output * (1 - Config.INTERVAL / self.tau)
 		return res
@@ -50,28 +60,36 @@ class Unit:
 		# Update excitation list
 		if self.input > self.threshold:
 			# Refractory time logic
-			if self.delay != 0 and reduce(lambda pre, nxt: pre | nxt, self.excitations[-self.refractory:]):
-				self.excitations.append(False)
-			else:
+			if self.rfrTime >= self.refractory:
 				self.excitations.append(True)
+				self.rfrTime = 0.0
+			else:
+				self.excitations.append(False)
+				self.rfrTime += Config.INTERVAL
 		else:
 			self.excitations.append(False)
+			self.rfrTime += Config.INTERVAL
 		self.output = self.Response()
 		self.input = 0.0
 		return self.output
 
 	def Forward(self):
 		u: Unit
-		for u in self.units:
-			u[0].input += self.output * u[1]
+		for u in self.nxt:
+			u[0].input += self.output * self.weight * u[1]
 		return self.output
 
 class PUnit(Unit):
 	def __init__(self, dist, scr:Screen, hex:Hex):
-		Unit.__init__(self, dist, None)
+		super().__init__(dist, [])
 		self.scr = scr
 		self.hex = hex
 		# Previous Illumination Sum
+		self.preSum = 0
+		self.duration = 0.0
+
+	def reset(self):
+		super().reset()
 		self.preSum = 0
 		self.duration = 0.0
 
@@ -107,3 +125,16 @@ class PUnit(Unit):
 			return True
 		else:
 			return False
+
+
+class SUnit(Unit):
+	def __init__(self, dist, pre, i1units, i2units):
+		super().__init__(dist, pre)
+
+		i1list = list(filter(lambda u: u.hex.isNear(self.hex.coord), i1units))
+		i2list = list(filter(lambda u: u.hex.isNextNear(self.hex.coord), i2units))
+
+		for i in i1list:
+			i.nxt.append((self, 1/6))
+		for i in i2list:
+			i.nxt.append((self, 1/12))

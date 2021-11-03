@@ -41,7 +41,7 @@ class Screen:
 			k4, b4 = GetLine(xy[0]+np.sqrt(3)*hexRad/2, xy[1]+hexRad/2, xy[0], xy[1]+hexRad)
 			for x in xRange:
 				for y in yRange:
-					if k1*x+b1 > y or k2*x+b2 > y or k3*x+b3 < y or k4*x+b4 < y:
+					if x >= width or y >= height or k1*x+b1 > y or k2*x+b2 > y or k3*x+b3 < y or k4*x+b4 < y:
 						continue
 					hex.pixels.append([x, y])
 		# Now all pixels have been mapped to the hexagons
@@ -60,11 +60,11 @@ class Screen:
 				continue
 			origin = o.pop()
 			# Ze/(Ze-Zo)
-			scale = (self.eye[2] - origin[2]) / self.eye[2]
+			scale = self.eye[2] / (self.eye[2] - origin[2])
 			width = int(o.width * scale)
 			height = int(o.height * scale)
 			pos = [0, 0]
-			# (yo-ye)/(y-ye)=Ze/(Ze-Zo)
+			# (y-ye)/(yo-ye)=Ze/(Ze-Zo)
 			pos[0] = int((origin[0] - self.eye[0]) * scale + self.eye[0])
 			pos[1] = int((origin[1] - self.eye[1]) * scale + self.eye[1])
 			for w in range(0, width):
