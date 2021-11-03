@@ -2,11 +2,11 @@ from functools import reduce
 import numpy as np
 
 from module.screen import Screen
-from module.unit import Unit, PUnit, SUnit
+from module.unit import Funit, Unit, PUnit, SUnit
 from module.config import Config
 
 class Network:
-	def __init__(self, scr:Screen):
+	def __init__(self, scr:Screen, closeF=False):
 		# Get Screen
 		self.scr = scr
 
@@ -55,7 +55,18 @@ class Network:
 			'weight': Config.S_WEIGHT
 			}, pre=[(p, 1.0)], i1units=self.i1unit, i2units=self.i2unit), self.eunit))
 
-	def reset(self):
+		# Generate Funit
+		self.funit = [Funit({
+			'threshold': Config.F_THRESHOLD,
+			'delay': Config.F_DELAY,
+			'tau': Config.F_TAU,
+			'refractory': Config.F_REFRACTORY,
+			'weight': Config.F_WEIGHT
+		}, pre=[(p, 1.0) for p in self.punit])]
+
+		self.closeF = closeF
+
+	def reset(self, closeF=False):
 		for u in self.punit:
 			u.reset()
 		for u in self.eunit:
@@ -66,6 +77,9 @@ class Network:
 			u.reset()
 		for u in self.sunit:
 			u.reset()
+		for u in self.funit:
+			u.reset()
+		self.closeF = closeF
 
 	def update(self, objList):
 		self.scr.render(objList)
@@ -78,5 +92,8 @@ class Network:
 		rst = list(map(lambda i2: i2.Update(), self.i2unit))
 		rst = list(map(lambda i2: i2.Forward(), self.i2unit))
 		rst = list(map(lambda s: s.Update(), self.sunit))
-		rst = reduce(lambda pre, nxt: pre + nxt, list(map(lambda u: u.output, self.sunit)))
-		return rst
+		rst = list(map(lambda f: f.Update(), self.funit))
+		val = reduce(lambda pre, nxt: pre + nxt, list(map(lambda u: u.output, self.sunit)))
+		if not self.closeF:
+			val += reduce(lambda pre, nxt: pre + nxt, list(map(lambda f: f.output, self.funit)))
+		return val

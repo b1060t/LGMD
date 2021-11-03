@@ -1,4 +1,4 @@
-from functools import reduce
+import numpy as np
 from module.config import Config
 from module.screen import Screen
 from module.hex import Hex
@@ -51,7 +51,7 @@ class Unit:
 		res = 0.0
 		# Calculate output
 		if self.excitations.pop(0):
-			res = 1
+			res = 1.0 * np.exp(-Config.INTERVAL / self.tau)
 		else:
 			res = self.output * (1 - Config.INTERVAL / self.tau)
 		return res
@@ -138,3 +138,34 @@ class SUnit(Unit):
 			i.nxt.append((self, 1/6))
 		for i in i2list:
 			i.nxt.append((self, 1/12))
+
+
+class Funit(Unit):
+	def __init__(self, dist, pre):
+		super().__init__(dist, pre)
+		self.preActivation = 0.0
+		self.preNum = len(pre)
+		self.rate = 0.0
+
+		self.excitations = [0.0 for i in range(int(self.delay/Config.INTERVAL))]
+
+	def Response(self):
+		# Calculate output
+		return -self.excitations.pop(0)
+
+	def Update(self):
+		activation = self.input / self.preNum
+		self.rate = activation - self.preActivation
+		if self.rate > Config.F_THRESHOLD:
+			self.excitations.append(self.rate)
+		else:
+			self.excitations.append(0.0)
+		self.output = self.Response()
+		self.preActivation = activation
+		return self.output
+
+	def reset(self):
+		super().reset()
+		self.preActivation = 0.0
+		self.rate = 0.0
+		self.excitations = [0.0 for i in range(int(self.delay/Config.INTERVAL))]

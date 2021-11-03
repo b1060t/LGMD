@@ -3,9 +3,13 @@ BME502 Final Project: lobula giant movement detector simulation from *jn.1996.75
 
 ## Results
 
-### Without F-unit
+### Velocity
 
-![](pics/without_F_unit.png)
+![](pics/rst_velocity.png)
+
+### Size
+
+![](pics/rst_size.png)
 
 ## Movement Generator
 
