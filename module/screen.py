@@ -32,7 +32,7 @@ class Screen:
 				self.hexList.append(Hex(1, rIdx, cIdx, hexRad))
 
 		for hex in self.hexList:
-			xy = hex.coord.xy * hexRad
+			xy = [hex.coord.xy[0, 0] * hexRad, hex.coord.xy[1, 0] * hexRad]
 			xRange = list(range(int(np.ceil(xy[0]-(np.sqrt(3)*hexRad/2))), int(np.ceil(xy[0]+(np.sqrt(3)*hexRad/2)))))
 			yRange = list(range(int(np.ceil(xy[1]-hexRad)), int(np.ceil(xy[1]+hexRad))))
 			k1, b1 = GetLine(xy[0]-np.sqrt(3)*hexRad/2, xy[1]-hexRad/2, xy[0], xy[1]-hexRad)

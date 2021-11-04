@@ -15,6 +15,9 @@ BME502 Final Project: lobula giant movement detector simulation from *jn.1996.75
 **Directional Selectivity:**
 ![Directional](pics/rst_direction.png)
 
+**Sunit:**
+![Sunit](pics/rst_sunit.gif)
+
 ## Movement Generator
 
 The output of this module should be a grey scale value related to the input time and coordinates, which fakes a video of moving objects.
