@@ -69,16 +69,46 @@ class Network:
 	def reset(self, closeF=False):
 		for u in self.punit:
 			u.reset()
+			u.threshold = Config.P_THRESHOLD
+			u.delay = Config.P_DELAY
+			u.tau = Config.P_TAU
+			u.refractory = Config.P_REFRACTORY
+			u.weight = Config.P_WEIGHT
 		for u in self.eunit:
 			u.reset()
+			u.threshold = Config.E_THRESHOLD
+			u.delay = Config.E_DELAY
+			u.tau = Config.E_TAU
+			u.refractory = Config.E_REFRACTORY
+			u.weight = Config.E_WEIGHT
 		for u in self.i1unit:
 			u.reset()
+			u.threshold = Config.I_THRESHOLD
+			u.delay = Config.I1_DELAY
+			u.tau = Config.I_TAU
+			u.refractory = Config.I_REFRACTORY
+			u.weight = Config.I1_WEIGHT
 		for u in self.i2unit:
 			u.reset()
+			u.threshold = Config.I_THRESHOLD
+			u.delay = Config.I2_DELAY
+			u.tau = Config.I_TAU
+			u.refractory = Config.I_REFRACTORY
+			u.weight = Config.I2_WEIGHT
 		for u in self.sunit:
 			u.reset()
+			u.threshold = Config.S_THRESHOLD
+			u.delay = Config.S_DELAY
+			u.tau = Config.S_TAU
+			u.refractory = Config.S_REFRACTORY
+			u.weight = Config.S_WEIGHT
 		for u in self.funit:
 			u.reset()
+			u.threshold = Config.F_THRESHOLD
+			u.delay = Config.F_DELAY
+			u.tau = Config.F_TAU
+			u.refractory = Config.F_REFRACTORY
+			u.weight = Config.F_WEIGHT
 		self.closeF = closeF
 
 	def update(self, objList):
