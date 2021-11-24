@@ -79,7 +79,7 @@ class Unit:
 			u[0].input += self.output * self.weight * u[1]
 		return self.output
 
-class PUnit(Unit):
+class Punit(Unit):
 	def __init__(self, dist, scr:Screen, hex:Hex):
 		super().__init__(dist, [])
 		self.scr = scr
@@ -127,7 +127,7 @@ class PUnit(Unit):
 			return False
 
 
-class SUnit(Unit):
+class Sunit(Unit):
 	def __init__(self, dist, pre, i1units, i2units):
 		super().__init__(dist, pre)
 

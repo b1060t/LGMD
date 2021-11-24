@@ -2,7 +2,7 @@ from functools import reduce
 import numpy as np
 
 from module.screen import Screen
-from module.unit import Funit, Unit, PUnit, SUnit
+from module.unit import Funit, Unit, Punit, Sunit
 from module.config import Config
 
 class Network:
@@ -11,7 +11,7 @@ class Network:
 		self.scr = scr
 
 		# Generate Punit
-		self.punit = list(map(lambda h: PUnit({
+		self.punit = list(map(lambda h: Punit({
 			'threshold': Config.P_THRESHOLD,
 			'delay': Config.P_DELAY,
 			'tau': Config.P_TAU,
@@ -47,7 +47,7 @@ class Network:
 			}, pre=[(p, 1.0)]), self.punit))
 
 		# Generate Sunit
-		self.sunit = list(map(lambda p: SUnit({
+		self.sunit = list(map(lambda p: Sunit({
 			'threshold': Config.S_THRESHOLD,
 			'delay': Config.S_DELAY,
 			'tau': Config.S_TAU,
