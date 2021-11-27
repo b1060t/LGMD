@@ -95,6 +95,10 @@ There's no significant difference between these two models except that the resul
 
 ![](notes/network/network.png)
 
+**Our implementation:**
+
+![](pics/impl.jpg)
+
 To implement LGMD network, we first defined a basic `unit` class which has several functions shared by all kinds of units. If a unit type needs a specific function, these functions can be easily overwritten:
 
 **Init:** This is where all parameters of a specific unit are set including time constant, refractory time and threshold.
