@@ -56,7 +56,9 @@ The output of S-units is delineated in the form of a `.gif` file:
 
 ![](pics/rst_sunit.gif)
 
-It is different from the previous units that there's no output or rather small output on the object's border parallel to the y-axis. This is because I-units have a 2ms delay which would inhibit S-units even thought the stimulus is moving forward.
+It is different from the previous units that there's no output or rather small output on the object's border parallel to the y-axis. This is because I-units have a 2ms delay which would inhibit S-units even thought the stimulus is moving forward:
+
+![](pics/sunit_corner.png)
 
 
 ### Property 2
